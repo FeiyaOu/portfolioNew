@@ -1,0 +1,75 @@
+@import 'tailwindcss';
+
+:root {
+  --background: #f0f8f0;
+  --foreground: #2d3748;
+  --avocado-primary: #9acd32;
+  --avocado-light: #b8e6b8;
+  --avocado-dark: #7ba05b;
+  --avocado-muted: #e8f5e8;
+  --avocado-accent: #a8d8a8;
+  --avocado-soft: #f5faf5;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-avocado-primary: var(--avocado-primary);
+  --color-avocado-light: var(--avocado-light);
+  --color-avocado-dark: var(--avocado-dark);
+  --color-avocado-muted: var(--avocado-muted);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family:
+    var(--font-sans),
+    system-ui,
+    -apple-system,
+    sans-serif;
+  line-height: 1.6;
+}
+
+/* Particle background container */
+.particle-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: linear-gradient(
+    135deg,
+    var(--avocado-soft) 0%,
+    var(--background) 25%,
+    var(--avocado-muted) 50%,
+    var(--background) 75%,
+    var(--avocado-soft) 100%
+  );
+}
+
+/* Smooth transitions */
+* {
+  transition: all 0.3s ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--avocado-muted);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--avocado-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--avocado-dark);
+}

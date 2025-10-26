@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  imageUrl    String?
+  category    String
+  technologies String  // JSON string for array
+  liveUrl     String?
+  githubUrl   String?
+  published   Boolean  @default(false)
+  featured    Boolean  @default(false) // New field: Highlight important projects
+  order       Int      @default(0)     // New field: Custom sort order
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  difficulty String  @default("Intermediate")//NEW FIELD: Beginner,Intermediate,Advanced
+
+  @@map("projects")
+}
+
+model BlogPost {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  content     String
+  excerpt     String?
+  imageUrl    String?
+  published   Boolean  @default(false)
+  author      String   @default("Admin")
+  tags        String   // JSON string for array
+  readTime    Int?     // in minutes
+  priority    String   @default("Medium") // New field: High, Medium, Low
+  viewCount   Int      @default(0)        // New field: Track how many times viewed
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  likes       Int      @default(0)//NEW FIELD: Track likes
+  isTrending  Boolean  @default(false)//NEW FIELD: Mark trending
+
+  @@map("blog_posts")
+  @@index([priority])
+}
