@@ -14,9 +14,11 @@ model Project {
   id          String   @id @default(cuid())
   title       String
   description String
+  longDescription String? // Extended project description
   imageUrl    String?
   category    String
   technologies String  // JSON string for array
+  features    String?  // JSON string for array of features
   liveUrl     String?
   githubUrl   String?
   published   Boolean  @default(false)

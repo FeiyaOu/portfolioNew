@@ -36,6 +36,12 @@ export default function About() {
             >
               Portfolio
             </Link>
+            <Link
+              href="/blog"
+              className="text-gray-700 hover:text-gray-900 transition-colors"
+            >
+              Blog
+            </Link>
           </div>
         </div>
       </nav>

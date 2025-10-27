@@ -26,7 +26,7 @@ export default function AdminBlog() {
     }
   };
 
-  const deletePost = async (id) => {
+  const deletePost = async id => {
     if (!confirm('Are you sure you want to delete this blog post?')) {
       return;
     }
@@ -50,7 +50,7 @@ export default function AdminBlog() {
   const togglePublished = async (id, published) => {
     try {
       const res = await fetch(`/api/blog/${id}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -58,11 +58,14 @@ export default function AdminBlog() {
       });
 
       if (res.ok) {
-        setPosts(posts.map(post => 
-          post.id === id ? { ...post, published: !published } : post
-        ));
+        setPosts(
+          posts.map(post =>
+            post.id === id ? { ...post, published: !published } : post
+          )
+        );
       } else {
-        alert('Failed to update blog post');
+        const errorData = await res.json();
+        alert(errorData.error || 'Failed to update blog post');
       }
     } catch (error) {
       console.error('Error updating blog post:', error);
@@ -88,7 +91,10 @@ export default function AdminBlog() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <Link href="/admin/blog" className="text-xl font-bold text-gray-900">
+              <Link
+                href="/admin/blog"
+                className="text-xl font-bold text-gray-900"
+              >
                 Blog Management
               </Link>
             </div>
@@ -150,7 +156,7 @@ export default function AdminBlog() {
           </div>
         ) : (
           <ul className="divide-y divide-gray-200">
-            {posts.map((post) => (
+            {posts.map(post => (
               <li key={post.id} className="px-6 py-4">
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0">
@@ -171,7 +177,9 @@ export default function AdminBlog() {
                     <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500">
                       <span>By {post.author}</span>
                       <span>•</span>
-                      <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+                      <span>
+                        {new Date(post.createdAt).toLocaleDateString()}
+                      </span>
                       <span>•</span>
                       <span>{post.readTime} min read</span>
                     </div>
@@ -205,7 +213,7 @@ export default function AdminBlog() {
                       {post.published ? 'Unpublish' : 'Publish'}
                     </button>
                     <Link
-                      href={`/admin/blog/${post.id}/edit`}
+                      href={`/admin/blog/${post.id}`}
                       className="px-3 py-1 bg-blue-100 text-blue-800 rounded-md text-sm font-medium hover:bg-blue-200"
                     >
                       Edit

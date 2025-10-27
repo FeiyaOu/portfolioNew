@@ -1,51 +1,25 @@
 import Link from 'next/link';
 import ParticleBackground from '../../components/ParticleBackground';
 
-export default function Portfolio() {
-  const projects = [
-    {
-      id: 1,
-      title: 'E-Commerce Platform',
-      description: 'Modern online shopping experience',
-      image: '/api/placeholder/400/300',
-      category: 'Web Application',
-    },
-    {
-      id: 2,
-      title: 'Task Management App',
-      description: 'Productivity tool for teams',
-      image: '/api/placeholder/400/300',
-      category: 'Mobile App',
-    },
-    {
-      id: 3,
-      title: 'Restaurant Website',
-      description: 'Beautiful dining experience online',
-      image: '/api/placeholder/400/300',
-      category: 'Website',
-    },
-    {
-      id: 4,
-      title: 'Weather Dashboard',
-      description: 'Real-time weather information',
-      image: '/api/placeholder/400/300',
-      category: 'Dashboard',
-    },
-    {
-      id: 5,
-      title: 'Portfolio Website',
-      description: 'Creative showcase platform',
-      image: '/api/placeholder/400/300',
-      category: 'Website',
-    },
-    {
-      id: 6,
-      title: 'Social Media App',
-      description: 'Connect and share with friends',
-      image: '/api/placeholder/400/300',
-      category: 'Mobile App',
-    },
-  ];
+async function getProjects() {
+  try {
+    const res = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/projects?published=true`, {
+      next: { revalidate: 60 } // Revalidate every 60 seconds
+    });
+    
+    if (!res.ok) {
+      throw new Error('Failed to fetch projects');
+    }
+    
+    return await res.json();
+  } catch (error) {
+    console.error('Error fetching projects:', error);
+    return [];
+  }
+}
+
+export default async function Portfolio() {
+  const projects = await getProjects();
 
   return (
     <div className="min-h-screen relative">
@@ -104,8 +78,19 @@ export default function Portfolio() {
         </div>
 
         {/* Projects Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map(project => (
+        {projects.length === 0 ? (
+          <div className="text-center py-16">
+            <div className="text-6xl mb-4">💼</div>
+            <h3 className="text-2xl font-medium text-gray-900 mb-4">
+              No projects yet
+            </h3>
+            <p className="text-gray-600">
+              Check back soon for new projects!
+            </p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {projects.map(project => (
             <Link
               key={project.id}
               href={`/portfolio/${project.id}`}
@@ -113,16 +98,21 @@ export default function Portfolio() {
             >
               <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
                 {/* Project Image Placeholder */}
-                <div className="relative h-64 bg-gradient-to-br from-[var(--avocado-muted)] to-[var(--avocado-light)] flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-6xl mb-4">🖼️</div>
-                    <p className="text-[var(--avocado-dark)] font-medium">
-                      Project Image {project.id}
-                    </p>
-                    <p className="text-sm text-[var(--avocado-primary)] mt-2">
-                      Click to replace with your image
-                    </p>
-                  </div>
+                <div className="relative h-64 bg-gradient-to-br from-[var(--avocado-muted)] to-[var(--avocado-light)] flex items-center justify-center overflow-hidden">
+                  {project.imageUrl ? (
+                    <img
+                      src={project.imageUrl}
+                      alt={project.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="text-center">
+                      <div className="text-6xl mb-4">🖼️</div>
+                      <p className="text-[var(--avocado-dark)] font-medium">
+                        {project.title}
+                      </p>
+                    </div>
+                  )}
                   <div className="absolute top-4 right-4 bg-[var(--avocado-primary)] text-white px-3 py-1 rounded-full text-sm font-medium">
                     {project.category}
                   </div>
@@ -155,8 +145,9 @@ export default function Portfolio() {
                 </div>
               </div>
             </Link>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Call to Action */}
         <div className="text-center mt-16">

@@ -165,13 +165,10 @@ export default async function BlogPost({ params }) {
         </header>
 
         {/* Blog post content */}
-        <article className="prose prose-lg max-w-none">
-          <div 
-            className="text-gray-700 leading-relaxed"
-            dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br />') }}
-          />
-          <p>This is my first post!</p>
-        </article>
+        <article 
+          className="prose prose-lg prose-headings:text-gray-900 prose-p:text-gray-700 prose-strong:text-gray-900 prose-a:text-blue-600 prose-img:rounded-xl prose-img:shadow-lg max-w-none"
+          dangerouslySetInnerHTML={{ __html: post.content }}
+        />
 
         {/* Blog post footer */}
         <footer className="mt-16 pt-8 border-t border-gray-200">

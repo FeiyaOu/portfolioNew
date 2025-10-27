@@ -32,7 +32,7 @@ export async function GET(request, { params }) {
     // Convert JSON string back to array
     const postWithArray = {
       ...post,
-      tags: post.tags ? JSON.parse(post.tags) : []
+      tags: post.tags ? JSON.parse(post.tags) : [],
     };
 
     return NextResponse.json(postWithArray);
@@ -46,11 +46,17 @@ export async function GET(request, { params }) {
 }
 
 // PUT /api/blog/[id] - Update blog post (admin only)
-export async function PUT(request, { params }) {
+// Create a partial schema for PATCH operations
+const partialBlogPostSchema = blogPostSchema.partial();
+
+// PATCH /api/blog/[id] - Update blog post (admin only)
+export async function PATCH(request, { params }) {
   try {
     const { id } = await params;
     const body = await request.json();
-    const validatedData = blogPostSchema.parse(body);
+
+    // Use partial validation - allows any subset of fields
+    const validatedData = partialBlogPostSchema.parse(body);
 
     // Generate slug from title if title changed
     let slug = undefined;
@@ -68,20 +74,27 @@ export async function PUT(request, { params }) {
       readTime = Math.ceil(wordCount / 200);
     }
 
+    // Build update data object
+    const updateData = { ...validatedData };
+
+    // Add computed fields if present
+    if (slug) updateData.slug = slug;
+    if (readTime) updateData.readTime = readTime;
+
+    // Convert tags array to JSON string following project pattern
+    if (validatedData.tags && Array.isArray(validatedData.tags)) {
+      updateData.tags = JSON.stringify(validatedData.tags);
+    }
+
     const post = await prisma.blogPost.update({
       where: { id },
-      data: {
-        ...validatedData,
-        ...(slug && { slug }),
-        ...(readTime && { readTime }),
-        ...(validatedData.tags && { tags: JSON.stringify(validatedData.tags) }),
-      },
+      data: updateData,
     });
 
-    // Convert back to array for response
+    // Convert JSON strings back to arrays for response
     const postWithArray = {
       ...post,
-      tags: post.tags ? JSON.parse(post.tags) : []
+      tags: post.tags ? JSON.parse(post.tags) : [],
     };
 
     return NextResponse.json(postWithArray);

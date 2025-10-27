@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.18.0",
+    "mammoth": "^1.11.0",
     "next": "16.0.0",
     "next-auth": "^4.24.11",
     "prisma": "^6.18.0",

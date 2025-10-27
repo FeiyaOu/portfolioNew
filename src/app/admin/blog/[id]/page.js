@@ -1,12 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+// Add this import at the top
+import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import AdminAuth from '../../../../components/AdminAuth';
 
-export default function NewBlogPost() {
+export default function EditBlogPost({ params }) {
   const router = useRouter();
+  const { id } = use(params);
+  const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(false);
   const [uploadMode, setUploadMode] = useState('manual'); // 'manual' or 'document'
   const [documentProcessing, setDocumentProcessing] = useState(false);
@@ -20,6 +23,40 @@ export default function NewBlogPost() {
     tags: [],
     tagInput: '',
   });
+
+  useEffect(() => {
+    fetchBlogPost();
+  }, [id]);
+
+  const fetchBlogPost = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/blog/${id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setFormData({
+          title: data.title || '',
+          content: data.content || '',
+          excerpt: data.excerpt || '',
+          imageUrl: data.imageUrl || '',
+          published: data.published || false,
+          author: data.author || 'Admin',
+          tags: data.tags || [],
+          tagInput: '',
+        });
+      } else {
+        const errorData = await res.json();
+        alert(
+          `Error: ${errorData.error || errorData.message || 'Unknown error'}`
+        );
+      }
+    } catch (error) {
+      console.error('Error fetching project:', error);
+      alert('Failed to load project');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleInputChange = e => {
     const { name, value, type, checked } = e.target;
@@ -125,8 +162,8 @@ export default function NewBlogPost() {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/blog', {
-        method: 'POST',
+      const res = await fetch(`/api/blog/${id}`, {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
