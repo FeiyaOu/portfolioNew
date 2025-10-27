@@ -22,7 +22,7 @@ export default function AdminAuth({ children }) {
     setLoading(false);
   }, []);
 
-  const handleLogin = (e) => {
+  const handleLogin = e => {
     e.preventDefault();
     if (password === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
@@ -60,9 +60,11 @@ export default function AdminAuth({ children }) {
         <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900">Admin Access</h2>
-            <p className="text-gray-600 mt-2">Enter password to access admin panel</p>
+            <p className="text-gray-600 mt-2">
+              Enter password to access admin panel
+            </p>
           </div>
-          
+
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -72,13 +74,13 @@ export default function AdminAuth({ children }) {
                 type="password"
                 placeholder="Enter admin password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={e => setPassword(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                 required
                 autoFocus
               />
             </div>
-            
+
             <button
               type="submit"
               className="w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700 transition-colors font-medium"
@@ -86,10 +88,11 @@ export default function AdminAuth({ children }) {
               Access Admin Panel
             </button>
           </form>
-          
+
           <div className="mt-6 text-center">
             <p className="text-xs text-gray-500">
-              Demo password: <code className="bg-gray-100 px-1 rounded">admin123</code>
+              Demo password:{' '}
+              <code className="bg-gray-100 px-1 rounded">admin123</code>
             </p>
           </div>
         </div>
@@ -104,7 +107,9 @@ export default function AdminAuth({ children }) {
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
-              <h1 className="text-xl font-bold text-gray-900">Admin Dashboard</h1>
+              <h1 className="text-xl font-bold text-gray-900">
+                Admin Dashboard
+              </h1>
               <span className="text-sm text-green-600 bg-green-100 px-2 py-1 rounded-full">
                 Authenticated
               </span>
@@ -120,9 +125,7 @@ export default function AdminAuth({ children }) {
       </div>
 
       {/* Admin Content */}
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        {children}
-      </div>
+      <div className="max-w-6xl mx-auto px-4 py-8">{children}</div>
     </div>
   );
 }

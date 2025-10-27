@@ -1,0 +1,40 @@
+# GitHub Actions CI/CD Workflow
+# Industry standard: Run tests before every deployment
+
+name: Portfolio CI/CD
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci --force  # Handle Next.js version conflicts
+        
+      - name: Run ESLint
+        run: npm run lint
+        
+      - name: Run Tests
+        run: npm run test:ci
+        
+      - name: Run Build Test
+        run: npm run build
+        
+      # Tests completed successfully
+      # Vercel will deploy automatically via its GitHub integration
+      # Branch protection rules can be configured to require this workflow to pass
