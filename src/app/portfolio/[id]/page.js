@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ParticleBackground from '../../../components/ParticleBackground';
+import ResponsiveNavigation from '../../../components/ResponsiveNavigation';
 
 async function getProject(id) {
   try {
@@ -35,40 +36,8 @@ export default async function ProjectDetail({ params }) {
       {/* Particle background */}
       <ParticleBackground />
 
-      {/* Navigation */}
-      <nav className="relative z-10 p-6">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold text-gray-800">
-            Portfolio
-          </Link>
-          <div className="space-x-6">
-            <Link
-              href="/"
-              className="text-gray-700 hover:text-gray-900 transition-colors"
-            >
-              Home
-            </Link>
-            <Link
-              href="/about"
-              className="text-gray-700 hover:text-gray-900 transition-colors"
-            >
-              About
-            </Link>
-            <Link
-              href="/portfolio"
-              className="text-gray-900 font-medium transition-colors"
-            >
-              Portfolio
-            </Link>
-            <Link
-              href="/blog"
-              className="text-gray-700 hover:text-gray-900 transition-colors"
-            >
-              Blog
-            </Link>
-          </div>
-        </div>
-      </nav>
+      {/* Responsive Navigation */}
+      <ResponsiveNavigation currentPage="/portfolio" />
 
       {/* Main content */}
       <main className="relative z-10 max-w-6xl mx-auto px-6 py-12">

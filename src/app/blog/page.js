@@ -1,16 +1,20 @@
 import Link from 'next/link';
 import ParticleBackground from '../../components/ParticleBackground';
+import ResponsiveNavigation from '../../components/ResponsiveNavigation';
 
 async function getBlogPosts() {
   try {
-    const res = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/blog?published=true`, {
-      next: { revalidate: 60 } // Revalidate every 60 seconds
-    });
-    
+    const res = await fetch(
+      `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/blog?published=true`,
+      {
+        next: { revalidate: 60 }, // Revalidate every 60 seconds
+      }
+    );
+
     if (!res.ok) {
       throw new Error('Failed to fetch blog posts');
     }
-    
+
     return await res.json();
   } catch (error) {
     console.error('Error fetching blog posts:', error);
@@ -23,57 +27,20 @@ export default async function Blog() {
 
   return (
     <div className="min-h-screen relative">
-      {/* Particle background */}
+      {/* Particle background - will auto-hide on mobile */}
       <ParticleBackground />
 
-      {/* Navigation */}
-      <nav className="relative z-10 p-6">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <Link
-            href="/"
-            className="text-2xl font-bold text-gray-800"
-          >
-            Portfolio
-          </Link>
-          <div className="space-x-6">
-            <Link
-              href="/"
-              className="text-gray-700 hover:text-gray-900 transition-colors"
-            >
-              Home
-            </Link>
-            <Link
-              href="/about"
-              className="text-gray-700 hover:text-gray-900 transition-colors"
-            >
-              About
-            </Link>
-            <Link
-              href="/portfolio"
-              className="text-gray-700 hover:text-gray-900 transition-colors"
-            >
-              Portfolio
-            </Link>
-            <Link
-              href="/blog"
-              className="text-gray-900 font-medium transition-colors"
-            >
-              Blog
-            </Link>
-          </div>
-        </div>
-      </nav>
+      {/* Responsive Navigation */}
+      <ResponsiveNavigation currentPage="/blog" />
 
       {/* Main content */}
       <main className="relative z-10 max-w-4xl mx-auto px-6 py-12">
         {/* Header */}
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-light text-gray-900 mb-6">
-            My Blog
-          </h1>
+          <h1 className="text-5xl font-light text-gray-900 mb-6">My Blog</h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Thoughts, tutorials, and insights about web development, 
-            technology, and the creative process.
+            Thoughts, tutorials, and insights about web development, technology,
+            and the creative process.
           </p>
         </div>
 
@@ -84,13 +51,11 @@ export default async function Blog() {
             <h3 className="text-2xl font-medium text-gray-900 mb-4">
               No blog posts yet
             </h3>
-            <p className="text-gray-600">
-              Check back soon for new content!
-            </p>
+            <p className="text-gray-600">Check back soon for new content!</p>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {posts.map((post) => (
+            {posts.map(post => (
               <Link
                 key={post.id}
                 href={`/blog/${post.slug}`}
@@ -123,7 +88,7 @@ export default async function Blog() {
                     <h3 className="text-xl font-medium text-gray-900 mb-2 group-hover:text-gray-700 transition-colors line-clamp-2">
                       {post.title}
                     </h3>
-                    
+
                     {post.excerpt && (
                       <p className="text-gray-600 mb-4 line-clamp-3 flex-grow">
                         {post.excerpt}
@@ -133,9 +98,11 @@ export default async function Blog() {
                     <div className="mt-auto">
                       <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
                         <span>By {post.author}</span>
-                        <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+                        <span>
+                          {new Date(post.createdAt).toLocaleDateString()}
+                        </span>
                       </div>
-                      
+
                       {post.tags && post.tags.length > 0 && (
                         <div className="flex flex-wrap gap-2 mb-4">
                           {post.tags.slice(0, 3).map((tag, index) => (
@@ -180,8 +147,8 @@ export default async function Blog() {
               Stay Updated
             </h3>
             <p className="text-gray-600 mb-6">
-              Follow along for the latest posts about web development, 
-              design, and technology insights.
+              Follow along for the latest posts about web development, design,
+              and technology insights.
             </p>
             <a
               href="mailto:alex@example.com"

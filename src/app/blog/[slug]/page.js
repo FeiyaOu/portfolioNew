@@ -1,24 +1,28 @@
 import Link from 'next/link';
 import ParticleBackground from '../../../components/ParticleBackground';
+import ResponsiveNavigation from '../../../components/ResponsiveNavigation';
 
 async function getBlogPost(slug) {
   try {
     // First, get all posts to find the one with matching slug
-    const res = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/blog?published=true`, {
-      next: { revalidate: 60 } // Revalidate every 60 seconds
-    });
-    
+    const res = await fetch(
+      `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/blog?published=true`,
+      {
+        next: { revalidate: 60 }, // Revalidate every 60 seconds
+      }
+    );
+
     if (!res.ok) {
       throw new Error('Failed to fetch blog posts');
     }
-    
+
     const posts = await res.json();
     const post = posts.find(p => p.slug === slug);
-    
+
     if (!post) {
       return null;
     }
-    
+
     return post;
   } catch (error) {
     console.error('Error fetching blog post:', error);
@@ -55,43 +59,8 @@ export default async function BlogPost({ params }) {
       {/* Particle background */}
       <ParticleBackground />
 
-      {/* Navigation */}
-      <nav className="relative z-10 p-6">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <Link
-            href="/"
-            className="text-2xl font-bold text-gray-800"
-          >
-            Portfolio
-          </Link>
-          <div className="space-x-6">
-            <Link
-              href="/"
-              className="text-gray-700 hover:text-gray-900 transition-colors"
-            >
-              Home
-            </Link>
-            <Link
-              href="/about"
-              className="text-gray-700 hover:text-gray-900 transition-colors"
-            >
-              About
-            </Link>
-            <Link
-              href="/portfolio"
-              className="text-gray-700 hover:text-gray-900 transition-colors"
-            >
-              Portfolio
-            </Link>
-            <Link
-              href="/blog"
-              className="text-gray-900 font-medium transition-colors"
-            >
-              Blog
-            </Link>
-          </div>
-        </div>
-      </nav>
+      {/* Responsive Navigation */}
+      <ResponsiveNavigation currentPage="/blog" />
 
       {/* Main content */}
       <main className="relative z-10 max-w-4xl mx-auto px-6 py-12">
@@ -123,17 +92,19 @@ export default async function BlogPost({ params }) {
           <h1 className="text-4xl md:text-5xl font-light text-gray-900 mb-6 leading-tight">
             {post.title}
           </h1>
-          
+
           <div className="flex flex-wrap items-center gap-4 text-gray-600 mb-8">
             <div className="flex items-center">
               <span className="font-medium">By {post.author}</span>
             </div>
             <div className="flex items-center">
-              <span>{new Date(post.createdAt).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}</span>
+              <span>
+                {new Date(post.createdAt).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </span>
             </div>
             <div className="flex items-center">
               <span>{post.readTime} min read</span>
@@ -165,7 +136,7 @@ export default async function BlogPost({ params }) {
         </header>
 
         {/* Blog post content */}
-        <article 
+        <article
           className="prose prose-lg prose-headings:text-gray-900 prose-p:text-gray-700 prose-strong:text-gray-900 prose-a:text-blue-600 prose-img:rounded-xl prose-img:shadow-lg max-w-none"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
@@ -178,14 +149,15 @@ export default async function BlogPost({ params }) {
                 Written by {post.author}
               </h3>
               <p className="text-gray-600">
-                Published on {new Date(post.createdAt).toLocaleDateString('en-US', {
+                Published on{' '}
+                {new Date(post.createdAt).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
-                  day: 'numeric'
+                  day: 'numeric',
                 })}
               </p>
             </div>
-            
+
             <div className="flex space-x-4">
               <a
                 href="mailto:alex@example.com"

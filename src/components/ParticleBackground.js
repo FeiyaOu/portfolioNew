@@ -1,9 +1,31 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const ParticleBackground = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
+    // Check if screen is mobile/tablet size
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768); // Less than md breakpoint
+    };
+
+    // Initial check
+    checkScreenSize();
+
+    // Listen for resize events
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => {
+      window.removeEventListener('resize', checkScreenSize);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Don't create particles on mobile devices
+    if (isMobile) return;
+
     const createParticles = () => {
       const container = document.getElementById('particles-js');
       if (!container) return;
@@ -11,17 +33,19 @@ const ParticleBackground = () => {
       // Clear any existing particles
       container.innerHTML = '';
 
-      // Create 16 particles
-      for (let i = 0; i < 16; i++) {
+      // Create fewer particles for better performance
+      const particleCount = window.innerWidth > 1200 ? 16 : 12;
+
+      for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
-        
+
         // Random properties for each particle
-        const size = Math.random() * 12 + 8; // 8-20px
+        const size = Math.random() * 10 + 6; // 6-16px (smaller for better performance)
         const x = Math.random() * 100; // 0-100%
         const y = Math.random() * 100; // 0-100%
-        const duration = Math.random() * 20 + 10; // 10-30s
-        const delay = Math.random() * 5; // 0-5s delay
+        const duration = Math.random() * 25 + 15; // 15-40s (slower for better performance)
+        const delay = Math.random() * 8; // 0-8s delay
         const colors = ['#9acd32', '#b8e6b8', '#7ba05b', '#a8d8a8'];
         const color = colors[Math.floor(Math.random() * colors.length)];
 
@@ -33,7 +57,7 @@ const ParticleBackground = () => {
           border-radius: 50%;
           left: ${x}%;
           top: ${y}%;
-          opacity: 0.6;
+          opacity: 0.4;
           animation: float ${duration}s ease-in-out infinite;
           animation-delay: ${delay}s;
           pointer-events: none;
@@ -71,25 +95,31 @@ const ParticleBackground = () => {
           transition: all 0.3s ease;
         }
       `;
-      
+
       document.head.appendChild(style);
     };
 
     // Create particles after component mounts
-    setTimeout(createParticles, 100);
+    const timeoutId = setTimeout(createParticles, 100);
 
     // Cleanup function
     return () => {
+      clearTimeout(timeoutId);
       const container = document.getElementById('particles-js');
       if (container) {
         container.innerHTML = '';
       }
     };
-  }, []);
+  }, [isMobile]);
+
+  // Don't render anything on mobile
+  if (isMobile) {
+    return null;
+  }
 
   return (
-    <div 
-      id="particles-js" 
+    <div
+      id="particles-js"
       style={{
         position: 'fixed',
         top: 0,
@@ -98,7 +128,7 @@ const ParticleBackground = () => {
         height: '100%',
         zIndex: -1,
         background: 'transparent',
-        overflow: 'hidden'
+        overflow: 'hidden',
       }}
     />
   );
